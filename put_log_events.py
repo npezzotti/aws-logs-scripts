@@ -7,7 +7,9 @@ import boto3
 
 USAGE = "To run this script, supply a log group and stream name as required command line arguments."
 
-def main(args):    
+def main(args):   
+    """Sends a test log to the specified Cloudwatch log group/stream: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html#API_PutLogEvents_RequestSyntax"""
+
     if (len(args) != 2):
         return print(USAGE)
 
@@ -39,7 +41,7 @@ def main(args):
     return print(response)
 
 def get_sequence_token(client, log_group, log_stream):
-    """Returns the sequence token for the provided log stream for : https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html#API_PutLogEvents_RequestSyntax"""
+    """Fetches the sequence token for the provided log stream"""
     
     response = client.describe_log_streams(
         logGroupName=log_group,
