@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
-import json
-import sys
+from json import dumps
+from sys import argv
 from time import time
-import boto3
+from boto3 import client
 
 USAGE = "To run this script, supply a log group and stream name as required command line arguments."
 
@@ -14,17 +14,17 @@ def main(args):
         return print(USAGE)
 
     data = {'brand': 'Ford', 'model': 'F-250', 'id': 13245634, 'color': 'black'}
-    serializedData = json.dumps(data)
+    serializedData = dumps(data)
 
-    client = boto3.client('logs')
+    cloudwatch_client = client('logs')
 
     log_group = args[0]
     log_stream = args[1]
     timestamp = int(time() * 1000)
     
     try:
-        sequence_token = get_sequence_token(client, log_group, log_stream)
-        response = client.put_log_events(
+        sequence_token = get_sequence_token(cloudwatch_client, log_group, log_stream)
+        response = cloudwatch_client.put_log_events(
             logGroupName=log_group,
             logStreamName=log_stream,
             logEvents=[
@@ -40,10 +40,10 @@ def main(args):
 
     return print(response)
 
-def get_sequence_token(client, log_group, log_stream):
+def get_sequence_token(cloudwatch_client, log_group, log_stream):
     """Fetches the sequence token for the provided log stream"""
     
-    response = client.describe_log_streams(
+    response = cloudwatch_client.describe_log_streams(
         logGroupName=log_group,
         logStreamNamePrefix=log_stream, 
         limit=1
@@ -57,4 +57,4 @@ def get_sequence_token(client, log_group, log_stream):
     return sequence_token
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main(argv[1:])
