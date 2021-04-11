@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import json
 import sys
 from time import time
 import boto3
@@ -9,6 +10,9 @@ USAGE = "To run this script, supply a log group and stream name as required comm
 def main(args):    
     if (len(args) != 2):
         return print(USAGE)
+
+    data = {'brand': 'Ford', 'model': 'F-250', 'id': 13245634, 'color': 'black'}
+    serializedData = json.dumps(data)
 
     client = boto3.client('logs')
 
@@ -24,7 +28,7 @@ def main(args):
             logEvents=[
                 {
                     'timestamp': timestamp,
-                    'message': 'ERROR'
+                    'message': '{"status": "ERROR"}'
                 }
             ],
             sequenceToken=sequence_token
@@ -35,6 +39,7 @@ def main(args):
     return print(response)
 
 def get_sequence_token(client, log_group, log_stream):
+    """Returns the sequence token for the provided log stream for : https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html#API_PutLogEvents_RequestSyntax"""
     
     response = client.describe_log_streams(
         logGroupName=log_group,
