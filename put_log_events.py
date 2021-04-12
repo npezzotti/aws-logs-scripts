@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from json import dumps
-import argparse
+from argparse import ArgumentParser
 from time import time
 from boto3 import client
 
@@ -53,7 +53,7 @@ def get_sequence_token(cloudwatch_client, log_group, log_stream):
 
 def validate_input():
     """Validates user input"""
-    parser = argparse.ArgumentParser(description='Uploads log events to a Cloudwatch log group.')
+    parser = ArgumentParser(description='Uploads log events to a Cloudwatch log group.')
     
     parser.add_argument('--log-group', type=str, required=True,
                         help='targeted Cloudwatch log group')

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from json import dumps
-import argparse
+from argparse import ArgumentParser
 from boto3 import client
 
 def main():
@@ -26,7 +26,7 @@ def main():
 
 def validate_input():
     """Validates user input"""
-    parser = argparse.ArgumentParser(description='Uploads logs to an s3 bucket.')
+    parser = ArgumentParser(description='Uploads logs to an s3 bucket.')
     
     parser.add_argument('--s3', type=str, required=True,
                         help='the s3 to upload to')
