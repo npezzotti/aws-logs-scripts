@@ -1,33 +1,41 @@
 #!/usr/bin/env python
 
-import sys
-import json
-import boto3
+from json import dumps
+import argparse
+from boto3 import client
 
-USAGE = "To run this script, supply an s3 bucket and a key as required command line arguments."
+def main():
+    args = validate_input()
 
-def main(args):
-    if (len(args) != 2):
-        return print(USAGE)
+    s3 = args.s3
+    key = args.key
+    message = args.message
 
-    s3 = args[0]
-    key = args[1]
-
-    data = {'brand': 'Ford', 'model': 'F-250', 'id': 13245634, 'color': 'black'}
-    serializedData = json.dumps(data)
-
-    client = boto3.client('s3')
+    s3_client = client('s3')
     
     try:
-        response = client.put_object(
+        response = s3_client.put_object(
             Bucket=s3,
             Key=key,
-            Body=serializedData,
+            Body=message,
         )
     except Exception as err:
         return print(err)
 
     return print(response)
 
+def validate_input():
+    """Validates user input"""
+    parser = argparse.ArgumentParser(description='Uploads logs to an s3 bucket.')
+    
+    parser.add_argument('--s3', type=str, required=True,
+                        help='the s3 to upload to')
+    parser.add_argument('--key', type=str, required=True,
+                        help='the key for the uploaded object')
+    parser.add_argument('--message', type=str, required=True,
+                        help='the object to be uploaded')
+
+    return parser.parse_args()
+
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()

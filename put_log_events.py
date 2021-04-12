@@ -1,25 +1,20 @@
 #!/usr/bin/env python
 
 from json import dumps
-from sys import argv
+import argparse
 from time import time
 from boto3 import client
 
-USAGE = "To run this script, supply a log group and stream name as required command line arguments."
-
-def main(args):   
+def main():   
     """Sends a test log to the specified Cloudwatch log group/stream: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html#API_PutLogEvents_RequestSyntax"""
 
-    if (len(args) != 2):
-        return print(USAGE)
-
-    data = {'brand': 'Ford', 'model': 'F-250', 'id': 13245634, 'color': 'black'}
-    serializedData = dumps(data)
+    args = validate_input()
 
     cloudwatch_client = client('logs')
 
-    log_group = args[0]
-    log_stream = args[1]
+    log_group = args.log_group
+    log_stream = args.log_stream
+    message = args.message
     timestamp = int(time() * 1000)
     
     try:
@@ -30,7 +25,7 @@ def main(args):
             logEvents=[
                 {
                     'timestamp': timestamp,
-                    'message': serializedData
+                    'message': message
                 }
             ],
             sequenceToken=sequence_token
@@ -56,5 +51,18 @@ def get_sequence_token(cloudwatch_client, log_group, log_stream):
     
     return sequence_token
 
+def validate_input():
+    """Validates user input"""
+    parser = argparse.ArgumentParser(description='Uploads log events to a Cloudwatch log group.')
+    
+    parser.add_argument('--log-group', type=str, required=True,
+                        help='targeted Cloudwatch log group')
+    parser.add_argument('--log-stream', type=str, required=True,
+                        help='log stream in your Cloudwatch log group')
+    parser.add_argument('--message', type=str, required=True,
+                        help='log events to be uploaded.')
+
+    return parser.parse_args()
+
 if __name__ == '__main__':
-    main(argv[1:])
+    main()
