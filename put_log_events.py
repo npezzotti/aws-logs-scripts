@@ -30,7 +30,7 @@ def main(args):
             logEvents=[
                 {
                     'timestamp': timestamp,
-                    'message': '{"status": "ERROR"}'
+                    'message': serializedData
                 }
             ],
             sequenceToken=sequence_token
