@@ -53,6 +53,7 @@ def get_sequence_token(cloudwatch_client, log_group, log_stream):
 
 def validate_input():
     """Validates user input"""
+    
     parser = ArgumentParser(description='Uploads log events to a Cloudwatch log group.')
     
     parser.add_argument('--log-group', type=str, required=True,
