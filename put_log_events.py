@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from json import dumps
 from argparse import ArgumentParser
 from time import time
 from boto3 import client
@@ -56,11 +55,11 @@ def validate_input():
     
     parser = ArgumentParser(description='Uploads log events to a Cloudwatch log group.')
     
-    parser.add_argument('--log-group', type=str, required=True,
+    parser.add_argument('-g', '--log-group', type=str, required=True,
                         help='targeted Cloudwatch log group')
-    parser.add_argument('--log-stream', type=str, required=True,
+    parser.add_argument('-s', '--log-stream', type=str, required=True,
                         help='log stream in your Cloudwatch log group')
-    parser.add_argument('--message', type=str, required=True,
+    parser.add_argument('-m', '--message', type=str, required=True,
                         help='log events to be uploaded.')
 
     return parser.parse_args()
